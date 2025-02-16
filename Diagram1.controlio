@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ControlIO Version="v1.0.0">
+  <Properties SyncReset="true" CycleTime="10" />
+  <Diagram DiagramPosition="-535,0" DiagramScale="1">
+    <NodeData Key="2" Location="50 150" NodeType="InternalCustomNode" AssemblyName="Function Blocks" NodeID="ControlIO.Plugins.FunctionBlocks.Rs" />
+    <NodeData Key="4" Location="-370 285" NodeType="InputBit" MemMapAddress="0" NodeDescription="Sensor  Left" />
+    <NodeData Key="3" Location="270 160" NodeType="OutputBit" MemMapAddress="0" NodeDescription="Roller Conveyor Right" />
+    <NodeData Key="5" Location="-145 280" NodeType="InputBit" MemMapAddress="1" NodeDescription="Sensor Right" />
+    <NodeData Key="6" Location="55 365" NodeType="InternalCustomNode" AssemblyName="Function Blocks" NodeID="ControlIO.Plugins.FunctionBlocks.Rs" />
+    <NodeData Key="7" Location="275 375" NodeType="OutputBit" MemMapAddress="1" NodeDescription="Roller Conveyor Left" />
+    <LinkData From="4" To="2" FromPort="Out-Bit-0" ToPort="In-Bit-0" NodeType="LinkData" />
+    <LinkData From="2" To="3" FromPort="Out-Bit-0" ToPort="In-Bit-0" NodeType="LinkData" />
+    <LinkData From="5" To="2" FromPort="Out-Bit-0" ToPort="In-Bit-1" NodeType="LinkData" />
+    <LinkData From="6" To="7" FromPort="Out-Bit-0" ToPort="In-Bit-0" NodeType="LinkData" />
+    <LinkData From="4" To="6" FromPort="Out-Bit-0" ToPort="In-Bit-1" NodeType="LinkData" />
+    <LinkData From="5" To="6" FromPort="Out-Bit-0" ToPort="In-Bit-0" NodeType="LinkData" />
+  </Diagram>
+</ControlIO>
