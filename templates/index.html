@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Contrôle Factory I/O</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .counter-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .counter-box {
+            border: 2px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .blue { border-color: #007bff; }
+        .green { border-color: #28a745; }
+        .grey { border-color: #6c757d; }
+        .counter-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .button-group {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            width: 200px;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        button.stop {
+            background-color: #f44336;
+        }
+        h2 { margin-top: 0; }
+        #connection-status {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contrôle Factory I/O</h1>
+    
+    <div id="connection-status"></div>
+
+    <div class="counter-container">
+        <div class="counter-box blue">
+            <h2>Blocs Bleus</h2>
+            <div id="count-blue" class="counter-value">0</div>
+        </div>
+        <div class="counter-box green">
+            <h2>Blocs Verts</h2>
+            <div id="count-green" class="counter-value">0</div>
+        </div>
+        <div class="counter-box grey">
+            <h2>Blocs Métalliques</h2>
+            <div id="count-grey" class="counter-value">0</div>
+        </div>
+    </div>
+
+    <div class="control-buttons">
+        <div class="button-group">
+            <h3>Contrôle des convoyeurs</h3>
+            <button onclick="sendCommand('roll_on')">Démarrer convoyeurs</button>
+            <button onclick="sendCommand('roll_off')" class="stop">Arrêter convoyeurs</button>
+        </div>
+        <div class="button-group">
+            <h3>Contrôle manuel des trieurs</h3>
+            <button onclick="sendCommand('blue_on')">Activer trieur bleu</button>
+            <button onclick="sendCommand('green_on')">Activer trieur vert</button>
+            <button onclick="sendCommand('metal_on')">Activer trieur métal</button>
+        </div>
+    </div>
+
+    <script>
+        // Mettre à jour le statut de connexion
+        function updateStatus() {
+            $.get('/status', function(data) {
+                $('#connection-status').text(data);
+            });
+        }
+
+        // Mettre à jour les compteurs
+        function updateCounters() {
+            $.get('/get_counts', function(data) {
+                $('#count-blue').text(data.blue);
+                $('#count-green').text(data.green);
+                $('#count-grey').text(data.grey);
+            });
+        }
+
+        // Envoyer une commande au serveur
+        function sendCommand(action) {
+            $.ajax({
+                url: '/command',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ action: action }),
+                success: function(response) {
+                    console.log('Commande envoyée avec succès:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erreur lors de l\'envoi de la commande:', error);
+                }
+            });
+        }
+
+        // Mettre à jour le statut et les compteurs toutes les 500ms
+        setInterval(function() {
+            updateStatus();
+            updateCounters();
+        }, 500);
+
+        // Mise à jour initiale
+        updateStatus();
+        updateCounters();
+    </script>
+</body>
+</html>

@@ -6,21 +6,21 @@
 
 from pyModbusTCP.client import ModbusClient
 from time import sleep
-# from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify
 import threading
 
 #flask related
-# app = Flask(__name__)
+app = Flask(__name__)
 
-# @app.route("/status")
-# def status():
-# 	strTmpStatus = "Statut de connexion: " + strConStat
-# 	return strTmpStatus
+@app.route("/status")
+def status():
+	strTmpStatus = "Statut de connexion: " + strConStat
+	return strTmpStatus
 
-# @app.route("/")
-# def index():
-#     """Affiche la page principale avec les boutons"""
-#     return render_template("index.html")
+@app.route("/")
+def index():
+    """Affiche la page principale avec les boutons"""
+    return render_template("index.html")
 	
 
 #############
@@ -130,48 +130,68 @@ def green_on():
 	client.write_single_coil(bras_green,0)
 	client.write_single_coil(roller_green,0)
 
-# @app.route("/command", methods=["POST"])
-# def command():
-#     """Gère l'action déclenchée par un bouton (sans logique pour l'instant)"""
-#     action = request.json.get("action")
-#     print(f"Action reçue: {action}")  # Juste pour afficher dans le terminal
+@app.route("/command", methods=["POST"])
+def command():
+    """Gère l'action déclenchée par un bouton (sans logique pour l'instant)"""
+    action = request.json.get("action")
+    print(f"Action reçue: {action}")  # Juste pour afficher dans le terminal
 
-#     if action == "blue_on":
-#         blue_on()
-#     elif action == "green_on":
-#         green_on()
-#     elif action == "metal_on":
-#         metal_on()
-#     elif action == "roll_on":
-#         roll_on()
-#     elif action == "roll_off":
-#         roll_off()
-#     else:
-#         return jsonify({"status": "error", "message": "Action inconnue"}), 400
-#     return jsonify({"status": "success", "message": f"Commande '{action}' reçue"})
+    if action == "blue_on":
+        blue_on()
+    elif action == "green_on":
+        green_on()
+    elif action == "metal_on":
+        metal_on()
+    elif action == "roll_on":
+        roll_on()
+    elif action == "roll_off":
+        roll_off()
+    else:
+        return jsonify({"status": "error", "message": "Action inconnue"}), 400
+    return jsonify({"status": "success", "message": f"Commande '{action}' reçue"})
 
-
-init_state()
-roll_on()
-
+"""
 while 1:
-	if client.read_input_registers(vision_sensor,1)[0] in range(7,10):
+	if client.read_input_registers(sensor,1)[0] in range(7,10):
 		print("Metal detected.")
 		metal_on()
-	if client.read_input_registers(vision_sensor,1)[0] in range(1,4):
+	if client.read_input_registers(sensor,1)[0] in range(1,4):
 		print("Blue detected.")
 		blue_on()
-	if client.read_input_registers(vision_sensor,1)[0] in range(4,7):
+	if client.read_input_registers(sensor,1)[0] in range(4,7):
 		print("Green detected.")
 		green_on()
+"""
+
+def modbus_loop():
+    init_state()
+    roll_on()
+
+    while 1:
+        if client.read_input_registers(vision_sensor,1)[0] in range(7,10):
+            print("Metal detected.")
+            metal_on()
+        if client.read_input_registers(vision_sensor,1)[0] in range(1,4):
+            print("Blue detected.")
+            blue_on()
+        if client.read_input_registers(vision_sensor,1)[0] in range(4,7):
+            print("Green detected.")
+            green_on()
 
 
-# # Démarrer la boucle Modbus dans un thread
-# # modbus_thread = threading.Thread(target=modbus_loop, daemon=True)
-# # webapp_thread = threading.Thread(target=webapp, daemon=True)
+# Démarrer la boucle Modbus dans un thread
+modbus_thread = threading.Thread(target=modbus_loop, daemon=True)
+webapp_thread = threading.Thread(target=webapp, daemon=True)
 
-# # modbus_thread.start()
-# # webapp_thread.start()
+modbus_thread.start()
+webapp_thread.start()
+
+try:
+    while True:
+            sleep(1)
+except KeyboardInterrupt:
+    print("Arrêt du programme")
+    client.close()
 
 
 client.close()
