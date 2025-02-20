@@ -30,7 +30,6 @@ def index():
 slaveAddress='127.0.0.1'
 slavePort=502
 
-modbus_lock = threading.Lock()
 
 at_exit=0		#input
 vision_sensor=0		#input reg
@@ -151,18 +150,6 @@ def command():
         return jsonify({"status": "error", "message": "Action inconnue"}), 400
     return jsonify({"status": "success", "message": f"Commande '{action}' reçue"})
 
-@app.route("/get_counts")
-def get_counts():
-    """Retourne les valeurs des compteurs sous forme JSON"""
-    with modbus_lock:
-         
-        return jsonify({
-            "blue": client.read_holding_registers(count_blue, 1)[0],
-            "green": client.read_holding_registers(count_green, 1)[0],
-            "grey": client.read_holding_registers(count_grey, 1)[0]
-        })
-
-
 """
 while 1:
 	if client.read_input_registers(sensor,1)[0] in range(7,10):
@@ -180,17 +167,16 @@ def modbus_loop():
     init_state()
     roll_on()
 
-    with modbus_lock:
-        while 1:
-            if client.read_input_registers(vision_sensor,1)[0] in range(7,10):
-                print("Metal detected.")
-                metal_on()
-            if client.read_input_registers(vision_sensor,1)[0] in range(1,4):
-                print("Blue detected.")
-                blue_on()
-            if client.read_input_registers(vision_sensor,1)[0] in range(4,7):
-                print("Green detected.")
-                green_on()
+    while 1:
+        if client.read_input_registers(vision_sensor,1)[0] in range(7,10):
+            print("Metal detected.")
+            metal_on()
+        if client.read_input_registers(vision_sensor,1)[0] in range(1,4):
+            print("Blue detected.")
+            blue_on()
+        if client.read_input_registers(vision_sensor,1)[0] in range(4,7):
+            print("Green detected.")
+            green_on()
 
 
 # Démarrer la boucle Modbus dans un thread
