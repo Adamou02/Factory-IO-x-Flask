@@ -60,5 +60,5 @@ Permet de contrôler l'usine Factory IO :
 - Améliorer l'interface avec un design plus ergonomique
 
 ## Auteur
-Projet développé par (Adam Bouhrara)[https://github.com/Adamou02] dans le cadre d'un projet d'automatisation avec Factory I/O.
+Projet développé par [Adam Bouhrara](https://github.com/Adamou02) dans le cadre d'un projet d'automatisation avec Factory I/O.
 
