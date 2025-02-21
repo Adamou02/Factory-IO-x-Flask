@@ -49,7 +49,7 @@ Permet de contrôler l'usine Factory IO :
 
 
 ## Architecture du Projet
-- **`main.py`** : Gère la connexion Modbus, les commandes et le serveur Flask
+- **`driver.py`** : Gère la connexion Modbus, les commandes et le serveur Flask
 - **`templates/index.html`** : Interface utilisateur pour le contrôle
 
 ## Améliorations Possibles
